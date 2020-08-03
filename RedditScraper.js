@@ -16,11 +16,6 @@ const getPostTitles = async () => {
       postTitles.push(postTitle);
     });
 
-    // $('.md ul li').each((idx, el) => {
-    //   const guideline = $(el).text();
-    //   guidelines.push(guideline);
-    // });
-
     $('.md').find('ul').first().each((i, el) => {
       let guideline = $(el).text().trim();
       guidelines.push(guideline);
