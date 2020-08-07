@@ -9,9 +9,11 @@ const getPostInfo = async() => {
 
   const titles = [];
   const date = [];
-  const genre = [];
   const runtime = [];
   const rating = [];
+  const metascore = [];
+  const votes = [];
+  const grossEarning = [];
 
   $('h3 a').each((i, el) => {
     titles[i] = $(el).text().trim();
@@ -29,6 +31,22 @@ const getPostInfo = async() => {
     rating[i] = $(el).text().trim();
   })
 
+  if ($('.ratings-metascore .metascore').length){
+
+  }
+  else{
+    console.log('Does not')
+  }
+
+  $('.ratings-bar').each((i, el) => {
+    if($(el).find('.ratings-metascore'))
+    {
+      metascore[i] = $(el).find('.ratings-metascore .favorable').text().trim();
+    }
+  })
+
+  // console.log(metascore);
+
   let object = {};
 
   for(let i = 0; i < 50; i++){
@@ -38,11 +56,20 @@ const getPostInfo = async() => {
       title: titles[i],
       date: date[i],
       runtime: runtime[i],
-      rating: rating[i]
+      rating: rating[i],
+      metascore: metascore[i]
     };
   }
 
   console.log(object);
+
+  // converts object data to JSON
+  console.log(JSON.stringify(object));
+
+  // gives us JSON data back in object form
+  console.log(JSON.parse(contentJSON));
+
 }
+
 
 getPostInfo();
