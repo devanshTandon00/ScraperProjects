@@ -31,21 +31,37 @@ const getPostInfo = async() => {
     rating[i] = $(el).text().trim();
   })
 
-  if ($('.ratings-metascore .metascore').length){
+  // $('.ratings-bar').each((i, el) => {
+  // for(let i = 0; i < 50; i++){
+  //   if($('.ratings-metascore .favorable')){
+  //     metascore[i] = $('.ratings-metascore .favorable').text().trim();
+  //   }
+  //   else if($('.ratings-metascore .mixed')){
+  //     metascore[i] = $('.ratings-metascore .mixed').text().trim();
+  //   }
+  // }
+    //
+    // if($('ratings-metascore .favorable')){
+    //   metascore.push( $('.ratings-metascore .favorable').text().trim());
+    // }
+    // else if($('.ratings-metascore .mixed')){
+    //   metascore.push($('.ratings-metascore .mixed').text().trim());
+    // }
+    //
 
-  }
-  else{
-    console.log('Does not')
-  }
 
-  $('.ratings-bar').each((i, el) => {
-    if($(el).find('.ratings-metascore'))
-    {
-      metascore[i] = $(el).find('.ratings-metascore .favorable').text().trim();
-    }
-  })
+    $('.ratings-bar').each((i, el) => {
 
-  // console.log(metascore);
+      if($(el).find('.ratings-metascore .favorable').length > 0){
+        metascore[i] = $(el).find('.ratings-metascore .favorable').text().trim();
+      }
+
+      if($(el).find('.ratings-metascore .mixed').length > 0){
+        metascore[i] = $(el).find('.ratings-metascore .mixed').text().trim();
+      }
+    })
+
+// console.log(metascore);
 
   let object = {};
 
@@ -63,11 +79,11 @@ const getPostInfo = async() => {
 
   console.log(object);
 
-  // converts object data to JSON
-  console.log(JSON.stringify(object));
-
-  // gives us JSON data back in object form
-  console.log(JSON.parse(contentJSON));
+  // // converts object data to JSON
+  // console.log(JSON.stringify(object));
+  //
+  // // gives us JSON data back in object form
+  // console.log(JSON.parse(contentJSON));
 
 }
 
