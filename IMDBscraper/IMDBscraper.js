@@ -1,8 +1,10 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
-const getPostInfo = async() => {
-  const {data} = await axios.get('https://www.imdb.com/search/title/?groups=top_1000&ref_=adv_prv');
+const getPostInfo = async () => {
+  const {
+    data
+  } = await axios.get('https://www.imdb.com/search/title/?groups=top_1000&ref_=adv_prv');
   // console.log(data)
 
   const $ = cheerio.load(data);
@@ -31,44 +33,24 @@ const getPostInfo = async() => {
     rating[i] = $(el).text().trim();
   })
 
-  // $('.ratings-bar').each((i, el) => {
-  // for(let i = 0; i < 50; i++){
-  //   if($('.ratings-metascore .favorable')){
-  //     metascore[i] = $('.ratings-metascore .favorable').text().trim();
-  //   }
-  //   else if($('.ratings-metascore .mixed')){
-  //     metascore[i] = $('.ratings-metascore .mixed').text().trim();
-  //   }
-  // }
-    //
-    // if($('ratings-metascore .favorable')){
-    //   metascore.push( $('.ratings-metascore .favorable').text().trim());
-    // }
-    // else if($('.ratings-metascore .mixed')){
-    //   metascore.push($('.ratings-metascore .mixed').text().trim());
-    // }
-    //
+  $('.ratings-bar').each((i, el) => {
 
+    if ($(el).find('.ratings-metascore .favorable').length > 0) {
+      metascore[i] = $(el).find('.ratings-metascore .favorable').text().trim();
+    }
 
-    $('.ratings-bar').each((i, el) => {
+    if ($(el).find('.ratings-metascore .mixed').length > 0) {
+      metascore[i] = $(el).find('.ratings-metascore .mixed').text().trim();
+    }
+  })
 
-      if($(el).find('.ratings-metascore .favorable').length > 0){
-        metascore[i] = $(el).find('.ratings-metascore .favorable').text().trim();
-      }
-
-      if($(el).find('.ratings-metascore .mixed').length > 0){
-        metascore[i] = $(el).find('.ratings-metascore .mixed').text().trim();
-      }
-    })
-
-// console.log(metascore);
+  // console.log(metascore);
 
   let object = {};
 
-  for(let i = 0; i < 50; i++){
+  for (let i = 0; i < 50; i++) {
 
-    object[i] =
-    {
+    object[i] = {
       title: titles[i],
       date: date[i],
       runtime: runtime[i],
@@ -86,6 +68,5 @@ const getPostInfo = async() => {
   // console.log(JSON.parse(contentJSON));
 
 }
-
 
 getPostInfo();
