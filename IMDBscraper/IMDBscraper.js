@@ -2,9 +2,7 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 
 const getPostInfo = async () => {
-  const {
-    data
-  } = await axios.get('https://www.imdb.com/search/title/?groups=top_1000&ref_=adv_prv');
+  const {data} = await axios.get('https://www.imdb.com/search/title/?groups=top_1000&ref_=adv_prv');
   // console.log(data)
 
   const $ = cheerio.load(data);
@@ -34,7 +32,6 @@ const getPostInfo = async () => {
   })
 
   $('.ratings-bar').each((i, el) => {
-
     if ($(el).find('.ratings-metascore .favorable').length > 0) {
       metascore[i] = $(el).find('.ratings-metascore .favorable').text().trim();
     }
@@ -44,18 +41,29 @@ const getPostInfo = async () => {
     }
   })
 
-  // console.log(metascore);
+  const nv = [];
 
+  $('.sort-num_votes-visible').each((i, el) => {
+    if($(el).find('span').hasClass('text-muted')){
+      nv[i] = $(el).find('.text-muted').next().text();
+      votes[i] = nv[i].split('$')[0];
+      grossEarning[i] = nv[i].split('$')[1];
+    }
+  })
+
+  // console.log(votes)
+  // console.log(grossEarning)
   let object = {};
 
   for (let i = 0; i < 50; i++) {
-
     object[i] = {
       title: titles[i],
       date: date[i],
       runtime: runtime[i],
       rating: rating[i],
-      metascore: metascore[i]
+      metascore: metascore[i],
+      votes: votes[i],
+      grossEarning: grossEarning[i]
     };
   }
 
