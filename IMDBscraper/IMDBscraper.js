@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
+const otcsv = require('objects-to-csv');
 
 const getPostInfo = async () => {
   const {data} = await axios.get('https://www.imdb.com/search/title/?groups=top_1000&ref_=adv_prv');
@@ -44,15 +45,14 @@ const getPostInfo = async () => {
   const nv = [];
 
   $('.sort-num_votes-visible').each((i, el) => {
-    if($(el).find('span').hasClass('text-muted')){
+    if($(el).find('span')){
+      // text-muted has text 'votes:', however we need the number of votes which is in next() span tag
       nv[i] = $(el).find('.text-muted').next().text();
       votes[i] = nv[i].split('$')[0];
-      grossEarning[i] = nv[i].split('$')[1];
+      grossEarning[i] = '$' + nv[i].split('$')[1];
     }
   })
 
-  // console.log(votes)
-  // console.log(grossEarning)
   let object = {};
 
   for (let i = 0; i < 50; i++) {
@@ -67,14 +67,19 @@ const getPostInfo = async () => {
     };
   }
 
-  console.log(object);
+  return object;
+  // console.log(object);
 
   // // converts object data to JSON
   // console.log(JSON.stringify(object));
   //
   // // gives us JSON data back in object form
   // console.log(JSON.parse(contentJSON));
-
 }
 
-getPostInfo();
+getPostInfo()
+  .then(result => {
+    const transformed = new otcsv(result);
+    return transformed.toDisk('./output.csv');
+  })
+  .then(() => console.log('SUCCESSFULLY COMPLETED THE WEB SCRAPING SAMPLE'));
