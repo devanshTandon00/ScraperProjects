@@ -1,14 +1,7 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-
-// Connection URL
-const url = 'mongodb+srv://dtdansh:Devansht20@scraperdb.mm1eo.mongodb.net/scraperDB?retryWrites=true&w=majority';
-
-//database name
-const db = 'DB';
+const { mongoClient } = require('./db.js');
 
 let object = [];
 
@@ -63,12 +56,12 @@ const getPostInfo = async () => {
     }
   })
 
-//use connect to connect to db
-  MongoClient.connect(url, function(err, client) {
-    assert.equal(null, err);
-    console.log("Connected successfully to server");
-
-    const database = client.db(db);
+// //use connect to connect to db
+//   MongoClient.connect(url, function(err, client) {
+//     assert.equal(null, err);
+//     console.log("Connected successfully to server");
+//
+//     const database = client.db(db);
 
     for (let i = 0; i < 50; i++) {
       object[i] = {
@@ -82,11 +75,14 @@ const getPostInfo = async () => {
       }
     }
 
-    // use insertMany and pass an array of object containing the postInfo to mongodb database
     database.collection('postInfo').insertMany(object)
 
-    client.close();
-  });
+
+    // use insertMany and pass an array of object containing the postInfo to mongodb database
+    // database.collection('postInfo').insertMany(object)
+    //
+    // client.close();
+
 
   return object;
 }
