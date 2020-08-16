@@ -1,6 +1,16 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
-const otcsv = require('objects-to-csv');
+
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+
+// Connection URL
+const url = 'mongodb+srv://dtdansh:Devansht20@scraperdb.mm1eo.mongodb.net/scraperDB?retryWrites=true&w=majority';
+
+//database name
+const db = 'DB';
+
+let object = [];
 
 const getPostInfo = async () => {
   const {data} = await axios.get('https://www.imdb.com/search/title/?groups=top_1000&ref_=adv_prv');
@@ -53,33 +63,35 @@ const getPostInfo = async () => {
     }
   })
 
-  let object = {};
+//use connect to connect to db
+  MongoClient.connect(url, function(err, client) {
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
 
-  for (let i = 0; i < 50; i++) {
-    object[i] = {
-      title: titles[i],
-      date: date[i],
-      runtime: runtime[i],
-      rating: rating[i],
-      metascore: metascore[i],
-      votes: votes[i],
-      grossEarning: grossEarning[i]
-    };
-  }
+    const database = client.db(db);
+
+    for (let i = 0; i < 50; i++) {
+      object[i] = {
+        title: titles[i],
+        date: date[i],
+        runtime: runtime[i],
+        rating: rating[i],
+        metascore: metascore[i],
+        votes: votes[i],
+        grossEarning: grossEarning[i]
+      }
+    }
+
+    // use insertMany and pass an array of object containing the postInfo to mongodb database
+    database.collection('postInfo').insertMany(object)
+
+    client.close();
+  });
 
   return object;
-  // console.log(object);
-
-  // // converts object data to JSON
-  // console.log(JSON.stringify(object));
-  //
-  // // gives us JSON data back in object form
-  // console.log(JSON.parse(contentJSON));
 }
 
 getPostInfo()
-  .then(result => {
-    const transformed = new otcsv(result);
-    return transformed.toDisk('./output.csv');
-  })
-  .then(() => console.log('SUCCESSFULLY COMPLETED THE WEB SCRAPING SAMPLE'));
+
+//getPostInfo().then(obj => console.log(obj))
+//module.exports.object = getPostInfo;
