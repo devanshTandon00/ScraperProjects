@@ -12,6 +12,6 @@
     "@sendgrid/mail": "^7.2.2",
     "express": "^4.17.1",
     "node-cron": "^2.0.3",
-    "shelljs": "^0.8.4"
+    "shelljs": "^0.8.5"
   }
 }
